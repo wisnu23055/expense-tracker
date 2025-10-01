@@ -26,7 +26,6 @@ class AuthManager {
 
     async signUp(email, password) {
         try {
-            // ✅ Request ke Netlify function (bukan langsung ke Supabase)
             const response = await fetch('/.netlify/functions/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -43,7 +42,8 @@ class AuthManager {
                 throw new Error(data.error || 'Signup failed');
             }
 
-            alert('✅ Account created successfully! You can now login.');
+            // ✅ UPDATE MESSAGE
+            alert('✅ Account created! Please check your email and click the confirmation link before signing in.');
             this.showLoginModal();
             
         } catch (error) {
