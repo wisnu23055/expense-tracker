@@ -1,6 +1,13 @@
 const { createClient } = require('@supabase/supabase-js');
 
+// ✅ GUNAKAN ANON KEY untuk signup (bukan service key)
 const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_ANON_KEY  // ← Change ini!
+);
+
+// Service key untuk admin operations
+const supabaseAdmin = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY
 );
@@ -28,61 +35,61 @@ exports.handler = async (event, context) => {
         const { action, email, password } = JSON.parse(event.body);
 
         if (action === 'signup') {
-            // ✅ KIRIM EMAIL CONFIRMATION
-            const { data, error } = await supabase.auth.admin.createUser({
+            console.log('📧 Attempting signup for:', email);
+            
+            // ✅ GUNAKAN supabase.auth.signUp (akan kirim email otomatis)
+            const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
-                email_confirm: false,  // ❌ Ubah jadi false
-                user_metadata: {
-                    // Optional: tambah metadata
-                }
-            });
-
-            if (error) throw error;
-
-            // Kirim confirmation email manual
-            const { error: emailError } = await supabase.auth.admin.generateLink({
-                type: 'signup',
-                email: email,
                 options: {
-                    redirectTo: 'https://your-app.netlify.app'  // ✅ Ganti dengan URL Netlify Anda
+                    emailRedirectTo: 'https://exxpensettracker.netlify.app/'  // ✅ Ganti URL
                 }
             });
 
-            if (emailError) {
-                console.error('Email error:', emailError);
-                // Tapi tetap lanjutkan signup
+            if (error) {
+                console.error('Signup error:', error);
+                throw error;
             }
+
+            console.log('✅ Signup success:', data.user?.id);
 
             return {
                 statusCode: 200,
                 headers,
                 body: JSON.stringify({ 
                     success: true, 
-                    message: 'Account created! Please check your email to confirm your account.',
-                    user: { id: data.user.id, email: data.user.email }
+                    message: 'Please check your email for confirmation link',
+                    needsConfirmation: !data.user?.email_confirmed_at,
+                    user: { id: data.user?.id, email: data.user?.email }
                 })
             };
         } 
         
         else if (action === 'signin') {
+            console.log('🔑 Attempting signin for:', email);
+            
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
                 password
             });
 
-            if (error) throw error;
+            if (error) {
+                console.error('Signin error:', error);
+                throw error;
+            }
 
-            // ✅ CEK apakah email sudah di-confirm
+            // ✅ CEK email confirmation
             if (!data.user.email_confirmed_at) {
                 return {
                     statusCode: 400,
                     headers,
                     body: JSON.stringify({ 
-                        error: 'Please confirm your email first. Check your inbox.' 
+                        error: 'Please confirm your email first. Check your inbox and spam folder.' 
                     })
                 };
             }
+
+            console.log('✅ Signin success:', data.user.id);
 
             return {
                 statusCode: 200,
@@ -104,7 +111,7 @@ exports.handler = async (event, context) => {
         }
 
     } catch (error) {
-        console.error('Auth error:', error);
+        console.error('Auth function error:', error);
         return {
             statusCode: 400,
             headers,
