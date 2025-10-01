@@ -1,12 +1,12 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// ✅ GUNAKAN ANON KEY untuk signup (bukan service key)
+// ✅ GUNAKAN ANON KEY untuk signup (seperti client-side)
 const supabase = createClient(
     process.env.SUPABASE_URL,
-    process.env.SUPABASE_ANON_KEY  // ← Change ini!
+    process.env.SUPABASE_ANON_KEY
 );
 
-// Service key untuk admin operations
+// Admin client untuk operasi khusus (optional)
 const supabaseAdmin = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY
@@ -35,38 +35,47 @@ exports.handler = async (event, context) => {
         const { action, email, password } = JSON.parse(event.body);
 
         if (action === 'signup') {
-            console.log('📧 Attempting signup for:', email);
+            console.log('📧 Signup attempt for:', email);
             
-            // ✅ GUNAKAN supabase.auth.signUp (akan kirim email otomatis)
+            // ✅ PAKAI supabase.auth.signUp (BUKAN admin.createUser)
+            // Ini akan otomatis kirim email seperti client-side
             const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
-                    emailRedirectTo: 'https://exxpensettracker.netlify.app/'  // ✅ Ganti URL
+                    // Redirect setelah confirm email
+                    emailRedirectTo: `${process.env.URL || 'http://localhost:8888'}/`
                 }
             });
 
             if (error) {
-                console.error('Signup error:', error);
+                console.error('❌ Signup error:', error);
                 throw error;
             }
 
-            console.log('✅ Signup success:', data.user?.id);
+            console.log('✅ Signup success. User ID:', data.user?.id);
+            console.log('📨 Email sent:', !data.user?.email_confirmed_at ? 'YES' : 'NO');
 
             return {
                 statusCode: 200,
                 headers,
                 body: JSON.stringify({ 
                     success: true, 
-                    message: 'Please check your email for confirmation link',
+                    message: data.user?.email_confirmed_at 
+                        ? 'Account created and confirmed!' 
+                        : 'Account created! Please check your email for confirmation link.',
                     needsConfirmation: !data.user?.email_confirmed_at,
-                    user: { id: data.user?.id, email: data.user?.email }
+                    user: { 
+                        id: data.user?.id, 
+                        email: data.user?.email,
+                        confirmed: !!data.user?.email_confirmed_at
+                    }
                 })
             };
         } 
         
         else if (action === 'signin') {
-            console.log('🔑 Attempting signin for:', email);
+            console.log('🔑 Signin attempt for:', email);
             
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
@@ -74,11 +83,13 @@ exports.handler = async (event, context) => {
             });
 
             if (error) {
-                console.error('Signin error:', error);
+                console.error('❌ Signin error:', error);
                 throw error;
             }
 
-            // ✅ CEK email confirmation
+            // ✅ ALLOW login even without email confirmation (for testing)
+            // Remove this check if you want strict email confirmation
+            /*
             if (!data.user.email_confirmed_at) {
                 return {
                     statusCode: 400,
@@ -88,8 +99,9 @@ exports.handler = async (event, context) => {
                     })
                 };
             }
+            */
 
-            console.log('✅ Signin success:', data.user.id);
+            console.log('✅ Signin success for user:', data.user.id);
 
             return {
                 statusCode: 200,
@@ -111,7 +123,7 @@ exports.handler = async (event, context) => {
         }
 
     } catch (error) {
-        console.error('Auth function error:', error);
+        console.error('❌ Auth function error:', error);
         return {
             statusCode: 400,
             headers,
