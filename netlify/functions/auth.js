@@ -1,15 +1,9 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// ✅ GUNAKAN ANON KEY untuk signup (seperti client-side)
+// ✅ GUNAKAN ANON KEY untuk signup
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY
-);
-
-// Admin client untuk operasi khusus (optional)
-const supabaseAdmin = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
 );
 
 exports.handler = async (event, context) => {
@@ -37,14 +31,19 @@ exports.handler = async (event, context) => {
         if (action === 'signup') {
             console.log('📧 Signup attempt for:', email);
             
-            // ✅ PAKAI supabase.auth.signUp (BUKAN admin.createUser)
-            // Ini akan otomatis kirim email seperti client-side
+            // ✅ FIX: Get actual site URL from Netlify headers
+            const siteUrl = event.headers.host 
+                ? `https://${event.headers.host}` 
+                : 'http://localhost:8888';
+            
+            console.log('🌐 Site URL:', siteUrl);
+            
+            // ✅ PAKAI supabase.auth.signUp dengan URL yang benar
             const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
-                    // Redirect setelah confirm email
-                    emailRedirectTo: `${process.env.URL || 'http://localhost:8888'}/`
+                    emailRedirectTo: `${siteUrl}/?confirmed=true`
                 }
             });
 
@@ -54,21 +53,30 @@ exports.handler = async (event, context) => {
             }
 
             console.log('✅ Signup success. User ID:', data.user?.id);
-            console.log('📨 Email sent:', !data.user?.email_confirmed_at ? 'YES' : 'NO');
+            console.log('📧 Email confirmed at signup:', data.user?.email_confirmed_at);
+            console.log('📨 Should send email:', !data.user?.email_confirmed_at ? 'YES' : 'NO');
 
+            // ✅ Better response with more info
+            const needsConfirmation = !data.user?.email_confirmed_at;
+            
             return {
                 statusCode: 200,
                 headers,
                 body: JSON.stringify({ 
                     success: true, 
-                    message: data.user?.email_confirmed_at 
-                        ? 'Account created and confirmed!' 
-                        : 'Account created! Please check your email for confirmation link.',
-                    needsConfirmation: !data.user?.email_confirmed_at,
+                    message: needsConfirmation
+                        ? 'Account created! Please check your email (including spam folder) for confirmation link.'
+                        : 'Account created and confirmed! You can now sign in.',
+                    needsConfirmation,
                     user: { 
                         id: data.user?.id, 
                         email: data.user?.email,
                         confirmed: !!data.user?.email_confirmed_at
+                    },
+                    debug: {
+                        emailRedirectTo: `${siteUrl}/?confirmed=true`,
+                        emailConfirmedAt: data.user?.email_confirmed_at,
+                        siteUrl
                     }
                 })
             };
@@ -87,21 +95,8 @@ exports.handler = async (event, context) => {
                 throw error;
             }
 
-            // ✅ ALLOW login even without email confirmation (for testing)
-            // Remove this check if you want strict email confirmation
-            /*
-            if (!data.user.email_confirmed_at) {
-                return {
-                    statusCode: 400,
-                    headers,
-                    body: JSON.stringify({ 
-                        error: 'Please confirm your email first. Check your inbox and spam folder.' 
-                    })
-                };
-            }
-            */
-
             console.log('✅ Signin success for user:', data.user.id);
+            console.log('📧 Email confirmed:', !!data.user.email_confirmed_at);
 
             return {
                 statusCode: 200,

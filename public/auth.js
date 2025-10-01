@@ -6,6 +6,15 @@ class AuthManager {
     }
 
     async init() {
+        // ✅ CEK URL PARAMETERS untuk email confirmation
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('confirmed') === 'true') {
+            // User baru saja confirm email
+            alert('✅ Email confirmed successfully! You can now sign in.');
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
         // Cek apakah ada saved session
         const savedToken = localStorage.getItem('auth_token');
         const savedUser = localStorage.getItem('user');
@@ -26,6 +35,8 @@ class AuthManager {
 
     async signUp(email, password) {
         try {
+            console.log('🚀 Starting signup for:', email);
+            
             const response = await fetch('/.netlify/functions/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -36,25 +47,34 @@ class AuthManager {
                 })
             });
 
+            console.log('📡 Response status:', response.status);
+            
             const data = await response.json();
+            console.log('📄 Response data:', data);
             
             if (!response.ok) {
                 throw new Error(data.error || 'Signup failed');
             }
 
-            // ✅ UPDATE MESSAGE
-            alert('✅ Account created! Please check your email and click the confirmation link before signing in.');
+            // ✅ BETTER MESSAGE HANDLING
+            if (data.needsConfirmation) {
+                alert(`✅ ${data.message}\n\n📧 Debug info:\n- Email will be sent from: noreply@mail.app.supabase.io\n- Check spam folder!\n- Redirect URL: ${data.debug?.emailRedirectTo}`);
+            } else {
+                alert('✅ Account created and ready to use!');
+            }
+            
             this.showLoginModal();
             
         } catch (error) {
+            console.error('❌ Full signup error:', error);
             alert('❌ Signup error: ' + error.message);
-            console.error('Signup error:', error);
         }
     }
 
     async signIn(email, password) {
         try {
-            // ✅ Request ke Netlify function
+            console.log('🔑 Starting signin for:', email);
+            
             const response = await fetch('/.netlify/functions/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -66,6 +86,7 @@ class AuthManager {
             });
 
             const data = await response.json();
+            console.log('📄 Signin response:', data);
             
             if (!response.ok) {
                 throw new Error(data.error || 'Login failed');
@@ -78,7 +99,13 @@ class AuthManager {
             localStorage.setItem('auth_token', this.token);
             localStorage.setItem('user', JSON.stringify(this.user));
             
+            console.log('✅ Login successful, showing main content');
             this.showMainContent();
+            
+            // Load expenses after login
+            if (window.expenseManager) {
+                window.expenseManager.loadExpenses();
+            }
             
         } catch (error) {
             alert('❌ Login error: ' + error.message);
