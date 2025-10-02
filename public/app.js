@@ -6,15 +6,27 @@ window.expenseManager = null;
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Initializing Expense Tracker...');
     
-    // ✅ TIDAK PERLU Supabase client di frontend!
-    // Semua komunikasi via Netlify Functions
-    
-    window.authManager = new AuthManager();
+    // ✅ Initialize ExpenseManager FIRST
     window.expenseManager = new ExpenseManager();
+    console.log('✅ ExpenseManager initialized');
+    
+    // ✅ Then initialize AuthManager (will try to load expenses if logged in)
+    window.authManager = new AuthManager();
+    console.log('✅ AuthManager initialized');
     
     setupEventListeners();
     
     console.log('✅ App initialized successfully');
+    
+    // ✅ Add debugging info
+    setTimeout(() => {
+        console.log('🔍 Debug Info:');
+        console.log('- AuthManager ready:', !!window.authManager);
+        console.log('- ExpenseManager ready:', !!window.expenseManager);
+        console.log('- User logged in:', !!window.authManager?.user);
+        console.log('- Token available:', !!window.authManager?.token);
+        console.log('- Transactions loaded:', window.expenseManager?.transactions?.length || 0);
+    }, 1000);
 });
 
 function setupEventListeners() {
@@ -23,6 +35,12 @@ function setupEventListeners() {
         e.preventDefault();
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
+        
+        if (!email || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
+        
         await window.authManager.signIn(email, password);
     });
 
@@ -31,6 +49,11 @@ function setupEventListeners() {
         e.preventDefault();
         const email = document.getElementById('signupEmail').value.trim();
         const password = document.getElementById('signupPassword').value;
+        
+        if (!email || !password) {
+            alert('Please fill in all fields');
+            return;
+        }
         
         if (password.length < 6) {
             alert('Password must be at least 6 characters');
@@ -49,19 +72,29 @@ function setupEventListeners() {
         const type = document.getElementById('type').value;
         const category = document.getElementById('category').value;
 
-        if (!description || !amount || !type) {
+        if (!description || !amount || !type || !category) {
             alert('Please fill all required fields');
             return;
         }
 
-        await window.expenseManager.addTransaction({
+        if (parseFloat(amount) <= 0) {
+            alert('Amount must be greater than 0');
+            return;
+        }
+
+        console.log('➕ Adding transaction:', { description, amount, type, category });
+
+        const result = await window.expenseManager.addTransaction({
             description,
             amount: parseFloat(amount),
             type,
             category
         });
 
-        document.getElementById('transactionForm').reset();
+        if (result) {
+            console.log('✅ Transaction added successfully');
+            document.getElementById('transactionForm').reset();
+        }
     });
 
     // Auth buttons
@@ -86,11 +119,26 @@ function setupEventListeners() {
     });
 }
 
-// Error handlers
+// ✅ Add global error handlers with better logging
 window.addEventListener('error', (e) => {
-    console.error('Global error:', e.error);
+    console.error('🚨 Global error:', e.error);
+    console.error('🔍 Error details:', {
+        message: e.message,
+        filename: e.filename,
+        lineno: e.lineno,
+        colno: e.colno
+    });
 });
 
 window.addEventListener('unhandledrejection', (e) => {
-    console.error('Unhandled promise rejection:', e.reason);
+    console.error('🚨 Unhandled promise rejection:', e.reason);
+    console.error('🔍 Promise:', e.promise);
+});
+
+// ✅ Add visibility change handler (when user switches tabs)
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && window.authManager?.user && window.expenseManager) {
+        console.log('🔄 Tab became visible, refreshing data...');
+        window.expenseManager.loadExpenses();
+    }
 });

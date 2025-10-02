@@ -2,16 +2,17 @@ class AuthManager {
     constructor() {
         this.user = null;
         this.token = null;
+        this.isInitialized = false;  // ✅ Add flag
         this.init();
     }
 
     async init() {
+        console.log('🔄 Initializing AuthManager...');
+        
         // ✅ CEK URL PARAMETERS untuk email confirmation
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('confirmed') === 'true') {
-            // User baru saja confirm email
             alert('✅ Email confirmed successfully! You can now sign in.');
-            // Clean URL
             window.history.replaceState({}, document.title, window.location.pathname);
         }
 
@@ -20,17 +21,85 @@ class AuthManager {
         const savedUser = localStorage.getItem('user');
 
         if (savedToken && savedUser) {
+            console.log('🔑 Found saved session, restoring...');
+            
             this.token = savedToken;
             this.user = JSON.parse(savedUser);
-            this.showMainContent();
             
-            // Load expenses setelah login
-            if (window.expenseManager) {
-                window.expenseManager.loadExpenses();
+            // ✅ Verify token masih valid sebelum show content
+            try {
+                await this.verifyToken();
+                console.log('✅ Token verified, showing main content');
+                this.showMainContent();
+                
+                // ✅ Wait untuk expense manager ready, lalu load data
+                this.waitForExpenseManagerAndLoad();
+                
+            } catch (error) {
+                console.log('❌ Token invalid, clearing session');
+                this.clearSession();
+                this.showLoginModal();
             }
         } else {
+            console.log('📝 No saved session, showing login');
             this.showLoginModal();
         }
+        
+        this.isInitialized = true;
+        console.log('✅ AuthManager initialized');
+    }
+
+    // ✅ Add token verification method
+    async verifyToken() {
+        if (!this.token) {
+            throw new Error('No token');
+        }
+
+        const response = await fetch('/.netlify/functions/transactions', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this.token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Token invalid');
+        }
+
+        return true;
+    }
+
+    // ✅ Wait for expense manager and load data
+    waitForExpenseManagerAndLoad() {
+        const maxAttempts = 10;
+        let attempts = 0;
+
+        const checkAndLoad = () => {
+            attempts++;
+            console.log(`🔍 Checking for expenseManager (attempt ${attempts}/${maxAttempts})`);
+            
+            if (window.expenseManager && typeof window.expenseManager.loadExpenses === 'function') {
+                console.log('✅ ExpenseManager found, loading expenses...');
+                window.expenseManager.loadExpenses();
+                return;
+            }
+
+            if (attempts < maxAttempts) {
+                setTimeout(checkAndLoad, 100); // Try again after 100ms
+            } else {
+                console.log('❌ ExpenseManager not found after maximum attempts');
+            }
+        };
+
+        checkAndLoad();
+    }
+
+    // ✅ Add clear session method
+    clearSession() {
+        this.token = null;
+        this.user = null;
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user');
     }
 
     async signUp(email, password) {
@@ -56,9 +125,8 @@ class AuthManager {
                 throw new Error(data.error || 'Signup failed');
             }
 
-            // ✅ BETTER MESSAGE HANDLING
             if (data.needsConfirmation) {
-                alert(`✅ ${data.message}\n\n📧 Debug info:\n- Email will be sent from: noreply@mail.app.supabase.io\n- Check spam folder!\n- Redirect URL: ${data.debug?.emailRedirectTo}`);
+                alert(`✅ ${data.message}\n\n📧 Email akan dikirim dari: noreply@mail.app.supabase.io\nSilakan cek inbox dan folder spam!`);
             } else {
                 alert('✅ Account created and ready to use!');
             }
@@ -102,9 +170,10 @@ class AuthManager {
             console.log('✅ Login successful, showing main content');
             this.showMainContent();
             
-            // Load expenses after login
+            // ✅ Load expenses immediately after successful login
             if (window.expenseManager) {
-                window.expenseManager.loadExpenses();
+                console.log('📊 Loading expenses after login...');
+                await window.expenseManager.loadExpenses();
             }
             
         } catch (error) {
@@ -114,15 +183,12 @@ class AuthManager {
     }
 
     async signOut() {
-        this.token = null;
-        this.user = null;
+        console.log('🚪 Signing out...');
         
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user');
-        
+        this.clearSession();
         this.showLoginModal();
         
-        // Clear transactions
+        // Clear transactions UI
         if (window.expenseManager) {
             window.expenseManager.transactions = [];
             window.expenseManager.updateUI();
@@ -130,6 +196,8 @@ class AuthManager {
     }
 
     showMainContent() {
+        console.log('🖥️ Showing main content for user:', this.user?.email);
+        
         document.getElementById('mainContent').style.display = 'block';
         document.getElementById('loginModal').style.display = 'none';
         document.getElementById('signupModal').style.display = 'none';
@@ -139,6 +207,8 @@ class AuthManager {
     }
 
     showLoginModal() {
+        console.log('🔐 Showing login modal');
+        
         document.getElementById('mainContent').style.display = 'none';
         document.getElementById('loginModal').style.display = 'flex';
         document.getElementById('signupModal').style.display = 'none';
