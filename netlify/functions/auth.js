@@ -43,7 +43,7 @@ exports.handler = async (event, context) => {
                 email,
                 password,
                 options: {
-                    emailRedirectTo: `${siteUrl}/?confirmed=true&welcome=true`  // ✅ Add welcome param
+                    emailRedirectTo: `${siteUrl}/?confirmed=true`
                 }
             });
 

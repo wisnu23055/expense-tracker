@@ -6,18 +6,11 @@ class AuthManager {
     }
 
     async init() {
+        // ✅ CEK URL PARAMETERS untuk email confirmation
         const urlParams = new URLSearchParams(window.location.search);
-        
-        // ✅ Handle email confirmation dengan welcome message
         if (urlParams.get('confirmed') === 'true') {
-            const isWelcome = urlParams.get('welcome') === 'true';
-            
-            if (isWelcome) {
-                alert('🎉 Selamat datang di Expense Tracker!\n✅ Email Anda telah dikonfirmasi.\n\nAnda sekarang bisa login dan mulai mengelola keuangan Anda!');
-            } else {
-                alert('✅ Email confirmed successfully! You can now sign in.');
-            }
-            
+            // User baru saja confirm email
+            alert('✅ Email confirmed successfully! You can now sign in.');
             // Clean URL
             window.history.replaceState({}, document.title, window.location.pathname);
         }
