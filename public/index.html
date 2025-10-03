@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">  <!-- ✅ Change to 'id' untuk Indonesian -->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
+    <title>💰 Expense Tracker</title>
+    
+    <!-- ✅ Optimize font loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- ✅ Load only Quicksand (remove Oswald if not used) -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -25,7 +34,7 @@
                     <h2>Total Balance</h2>
                     <div id="totalBalance" style="font-size: 2rem; font-weight: bold; margin-top: 10px;">Rp 0</div>
                 </div>
-                
+
                 <div class="stats">
                     <div class="income">
                         <h3>Income</h3>
@@ -79,7 +88,7 @@
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
                 <p style="text-align: center; margin-top: 15px;">
-                    Don't have an account? 
+                    Don't have an account?
                     <a href="#" id="showSignup" style="color: #667eea;">Sign up</a>
                 </p>
             </div>
@@ -95,7 +104,7 @@
                     <button type="submit" class="btn btn-primary">Sign Up</button>
                 </form>
                 <p style="text-align: center; margin-top: 15px;">
-                    Already have an account? 
+                    Already have an account?
                     <a href="#" id="showLogin" style="color: #667eea;">Login</a>
                 </p>
             </div>
@@ -108,4 +117,5 @@
     <script src="expenses.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>
