@@ -33,11 +33,11 @@ class AuthManager {
             } catch (error) {
                 console.log('❌ Token invalid, clearing session');
                 this.clearSession();
-                this.showHero();  // ✅ Show hero instead of login modal
+                this.showHero();  //  Show hero instead of login modal
             }
         } else {
             console.log('📝 No saved session, showing hero');
-            this.showHero();  // ✅ Show hero for new visitors
+            this.showHero();  // Show hero for new visitors
         }
         
         this.isInitialized = true;
@@ -169,7 +169,7 @@ class AuthManager {
         console.log('🚪 Signing out...');
         
         this.clearSession();
-        this.showHero();  // ✅ Show hero after logout
+        this.showHero();  //  Show hero after logout
         
         if (window.expenseManager) {
             window.expenseManager.transactions = [];
@@ -177,7 +177,7 @@ class AuthManager {
         }
     }
 
-    // ✅ Show hero section (landing page)
+    //  Show hero section (landing page)
     showHero() {
         console.log('🏠 Showing hero section');
         
@@ -204,7 +204,7 @@ class AuthManager {
         const signupModal = document.getElementById('signupModal');
         const userEmail = document.getElementById('userEmail');
 
-        if (heroSection) heroSection.style.display = 'none';  // ✅ Hide hero
+        if (heroSection) heroSection.style.display = 'none';  //  Hide hero
         if (appHeader) appHeader.style.display = 'flex';
         if (mainContent) mainContent.style.display = 'block';
         if (loginModal) loginModal.style.display = 'none';
@@ -219,7 +219,7 @@ class AuthManager {
         const loginModal = document.getElementById('loginModal');
         const signupModal = document.getElementById('signupModal');
 
-        if (heroSection) heroSection.style.display = 'none';  // ✅ Hide hero when showing modal
+        if (heroSection) heroSection.style.display = 'none';  //  Hide hero when showing modal
         if (loginModal) loginModal.style.display = 'flex';
         if (signupModal) signupModal.style.display = 'none';
     }
@@ -231,7 +231,7 @@ class AuthManager {
         const loginModal = document.getElementById('loginModal');
         const signupModal = document.getElementById('signupModal');
 
-        if (heroSection) heroSection.style.display = 'none';  // ✅ Hide hero when showing modal
+        if (heroSection) heroSection.style.display = 'none';  //  Hide hero when showing modal
         if (loginModal) loginModal.style.display = 'none';
         if (signupModal) signupModal.style.display = 'flex';
     }

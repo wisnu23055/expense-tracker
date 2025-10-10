@@ -1,7 +1,7 @@
 class ExpenseManager {
     constructor() {
         this.transactions = [];
-        this.isLoading = false;  // ✅ Add loading state
+        this.isLoading = false;  //  Add loading state
         console.log('💰 ExpenseManager initialized');
     }
 
@@ -9,7 +9,7 @@ class ExpenseManager {
         try {
             console.log('➕ Adding transaction:', transaction);
             
-            // ✅ Check auth before making request
+            //  Check auth before making request
             if (!window.authManager?.token) {
                 throw new Error('Not authenticated. Please login again.');
             }
@@ -26,7 +26,7 @@ class ExpenseManager {
             const data = await response.json();
             
             if (!response.ok) {
-                // ✅ Handle auth errors specifically
+                //  Handle auth errors specifically
                 if (response.status === 401) {
                     alert('Session expired. Please login again.');
                     window.authManager.signOut();
@@ -35,9 +35,9 @@ class ExpenseManager {
                 throw new Error(data.error || 'Failed to add transaction');
             }
 
-            console.log('✅ Transaction added:', data.id);
+            console.log(' Transaction added:', data.id);
             
-            // ✅ Reload expenses to ensure consistency
+            //  Reload expenses to ensure consistency
             await this.loadExpenses();
             return data;
             
@@ -49,7 +49,7 @@ class ExpenseManager {
     }
 
     async loadExpenses() {
-        // ✅ Prevent multiple simultaneous loads
+        //  Prevent multiple simultaneous loads
         if (this.isLoading) {
             console.log('⏳ Load already in progress, skipping...');
             return;
@@ -59,7 +59,7 @@ class ExpenseManager {
             this.isLoading = true;
             console.log('📊 Loading expenses...');
             
-            // ✅ Check auth before making request
+            //  Check auth before making request
             if (!window.authManager?.token) {
                 console.log('❌ No auth token, cannot load expenses');
                 this.transactions = [];
@@ -77,7 +77,7 @@ class ExpenseManager {
             const data = await response.json();
             
             if (!response.ok) {
-                // ✅ Handle auth errors
+                //  Handle auth errors
                 if (response.status === 401) {
                     console.log('❌ Authentication failed, clearing session');
                     window.authManager.signOut();
@@ -86,7 +86,7 @@ class ExpenseManager {
                 throw new Error(data.error || 'Failed to load transactions');
             }
 
-            console.log(`✅ Loaded ${data.length} transactions`);
+            console.log(` Loaded ${data.length} transactions`);
             this.transactions = data || [];
             this.updateUI();
             
@@ -95,7 +95,7 @@ class ExpenseManager {
             this.transactions = [];
             this.updateUI();
             
-            // ✅ Don't show alert for auth errors (handled above)
+            //  Don't show alert for auth errors (handled above)
             if (!error.message.includes('authentication') && !error.message.includes('login')) {
                 alert('❌ Error loading transactions: ' + error.message);
             }
@@ -136,7 +136,7 @@ class ExpenseManager {
                 throw new Error(data.error || 'Failed to delete transaction');
             }
 
-            console.log('✅ Transaction deleted');
+            console.log(' Transaction deleted');
             await this.loadExpenses();
             
         } catch (error) {
@@ -164,7 +164,7 @@ class ExpenseManager {
 
         const balance = totals.income - totals.expense;
 
-        // ✅ Add null checks for DOM elements
+        //  Add null checks for DOM elements
         const balanceEl = document.getElementById('totalBalance');
         const incomeEl = document.getElementById('totalIncome');
         const expenseEl = document.getElementById('totalExpense');
@@ -235,7 +235,7 @@ class ExpenseManager {
         console.log('📋 Rendered', this.transactions.length, 'transactions');
     }
 
-    // ✅ Add HTML escape method for security
+    //  Add HTML escape method for security
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;

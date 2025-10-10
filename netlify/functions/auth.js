@@ -1,6 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// ✅ GUNAKAN ANON KEY untuk signup
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY
@@ -31,14 +30,13 @@ exports.handler = async (event, context) => {
         if (action === 'signup') {
             console.log('📧 Signup attempt for:', email);
             
-            // ✅ FIX: Get actual site URL from Netlify headers
+            //  FIX: Get actual site URL from Netlify headers
             const siteUrl = event.headers.host 
                 ? `https://${event.headers.host}` 
                 : 'http://localhost:8888';
             
             console.log('🌐 Site URL:', siteUrl);
             
-            // ✅ PAKAI supabase.auth.signUp dengan URL yang benar
             const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
@@ -56,7 +54,7 @@ exports.handler = async (event, context) => {
             console.log('📧 Email confirmed at signup:', data.user?.email_confirmed_at);
             console.log('📨 Should send email:', !data.user?.email_confirmed_at ? 'YES' : 'NO');
 
-            // ✅ Better response with more info
+            //  Determine if email confirmation is needed
             const needsConfirmation = !data.user?.email_confirmed_at;
             
             return {

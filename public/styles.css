@@ -5,14 +5,14 @@
 }
 
 body {
-    /* ✅ Better font stack dengan fallbacks */
+    /*  Better font stack dengan fallbacks */
     font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     font-weight: 400;
     line-height: 1.6;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     color: #333;
-    /* ✅ Better font rendering */
+    /*  Better font rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -28,41 +28,41 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 255, 0.95);  /* ✅ Slightly more opaque */
+    background: rgba(255, 255, 255, 0.95);  /*  Slightly more opaque */
     padding: 20px;
-    border-radius: 12px;  /* ✅ Slightly more rounded */
+    border-radius: 12px;  /*  Slightly more rounded */
     margin-bottom: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);  /* ✅ Better shadow */
-    backdrop-filter: blur(10px);  /* ✅ Glass effect */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);  /*  Better shadow */
+    backdrop-filter: blur(10px);  /*  Glass effect */
 }
 
 header h1 {
     color: #667eea;
-    font-weight: 700;  /* ✅ Bolder for brand */
+    font-weight: 700;  /*  Bolder for brand */
     font-size: 1.8rem;
-    letter-spacing: -0.02em;  /* ✅ Tighter letter spacing */
+    letter-spacing: -0.02em;  /*  Tighter letter spacing */
 }
 
 .auth-section {
     display: flex;
     align-items: center;
-    gap: 15px;  /* ✅ More spacing */
+    gap: 15px;  /*  More spacing */
 }
 
 .user-info {
-    font-weight: 500;  /* ✅ Medium weight */
+    font-weight: 500;  /*  Medium weight */
     color: #667eea;
     font-size: 0.95rem;
 }
 
 .btn {
-    padding: 12px 24px;  /* ✅ More padding */
+    padding: 12px 24px;  /*  More padding */
     border: none;
-    border-radius: 8px;  /* ✅ More rounded */
+    border-radius: 8px;  /*  More rounded */
     cursor: pointer;
-    font-weight: 500;  /* ✅ Medium weight */
+    font-weight: 500;  /*  Medium weight */
     font-size: 0.95rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);  /* ✅ Better easing */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);  /*  Better easing */
     text-transform: none;
     letter-spacing: 0.025em;
 }
@@ -70,12 +70,12 @@ header h1 {
 .btn-primary {
     background-color: #667eea;
     color: white;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);  /* ✅ Button shadow */
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);  /*  Button shadow */
 }
 
 .btn-primary:hover {
     background-color: #5a6fd8;
-    transform: translateY(-2px);  /* ✅ Hover lift effect */
+    transform: translateY(-2px);  /*  Hover lift effect */
     box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
 }
 
@@ -92,7 +92,7 @@ header h1 {
 
 .summary {
     background: rgba(255, 255, 255, 0.95);
-    padding: 32px;  /* ✅ More padding */
+    padding: 32px;  /*  More padding */
     border-radius: 12px;
     margin-bottom: 30px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -101,22 +101,22 @@ header h1 {
 
 .balance {
     text-align: center;
-    margin-bottom: 24px;  /* ✅ More spacing */
+    margin-bottom: 24px;  /*  More spacing */
 }
 
 .balance h2 {
     color: #667eea;
-    font-weight: 600;  /* ✅ Semibold */
+    font-weight: 600;  /*  Semibold */
     font-size: 1.25rem;
     margin-bottom: 12px;
     letter-spacing: -0.01em;
 }
 
 #totalBalance {
-    font-size: 3rem;  /* ✅ Larger for impact */
-    font-weight: 700;  /* ✅ Bold */
+    font-size: 3rem;  /*  Larger for impact */
+    font-weight: 700;  /*  Bold */
     color: #333;
-    letter-spacing: -0.03em;  /* ✅ Tighter for large text */
+    letter-spacing: -0.03em;  /*  Tighter for large text */
     margin-top: 8px;
 }
 
@@ -129,18 +129,18 @@ header h1 {
 
 .income, .expense {
     text-align: center;
-    padding: 24px;  /* ✅ More padding */
-    border-radius: 12px;  /* ✅ Consistent radius */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);  /* ✅ Subtle shadow */
+    padding: 24px;  /*  More padding */
+    border-radius: 12px;  /*  Consistent radius */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);  /*  Subtle shadow */
 }
 
 .income {
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);  /* ✅ Gradient */
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);  /*  Gradient */
     color: #155724;
 }
 
 .expense {
-    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);  /* ✅ Gradient */
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);  /*  Gradient */
     color: #721c24;
 }
 
@@ -153,7 +153,7 @@ header h1 {
 }
 
 .income div, .expense div {
-    font-weight: 700;  /* ✅ Bold numbers */
+    font-weight: 700;  /*  Bold numbers */
     font-size: 1.5rem;
     letter-spacing: -0.02em;
 }
@@ -169,7 +169,7 @@ header h1 {
 
 .add-transaction h3 {
     color: #667eea;
-    font-weight: 600;  /* ✅ Semibold */
+    font-weight: 600;  /*  Semibold */
     font-size: 1.25rem;
     margin-bottom: 24px;
     letter-spacing: -0.01em;
@@ -178,17 +178,17 @@ header h1 {
 #transactionForm {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;  /* ✅ Consistent spacing */
+    gap: 16px;  /*  Consistent spacing */
     align-items: end;
 }
 
 #transactionForm input,
 #transactionForm select {
-    padding: 14px 16px;  /* ✅ More padding */
-    border: 2px solid #e9ecef;  /* ✅ Lighter border */
+    padding: 14px 16px;  /*  More padding */
+    border: 2px solid #e9ecef;  /*  Lighter border */
     border-radius: 8px;
     font-size: 16px;
-    font-family: inherit;  /* ✅ Inherit Quicksand */
+    font-family: inherit;  /*  Inherit Quicksand */
     font-weight: 400;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     background: white;
@@ -198,7 +198,7 @@ header h1 {
 #transactionForm select:focus {
     outline: none;
     border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);  /* ✅ Focus ring */
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);  /*  Focus ring */
 }
 
 #transactionForm button {
@@ -226,9 +226,9 @@ header h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;  /* ✅ More padding */
+    padding: 20px;  /*  More padding */
     border: 1px solid #e9ecef;
-    border-radius: 12px;  /* ✅ Consistent radius */
+    border-radius: 12px;  /*  Consistent radius */
     margin-bottom: 12px;
     background: white;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -236,7 +236,7 @@ header h1 {
 }
 
 .transaction-item:hover {
-    transform: translateY(-1px);  /* ✅ Hover effect */
+    transform: translateY(-1px);  /*  Hover effect */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -245,7 +245,7 @@ header h1 {
 }
 
 .transaction-info > div:first-child {
-    font-weight: 500;  /* ✅ Medium weight for description */
+    font-weight: 500;  /*  Medium weight for description */
     font-size: 1rem;
     color: #333;
     margin-bottom: 4px;
@@ -258,7 +258,7 @@ header h1 {
 }
 
 .transaction-amount {
-    font-weight: 600;  /* ✅ Semibold for amounts */
+    font-weight: 600;  /*  Semibold for amounts */
     font-size: 1.1rem;
     letter-spacing: -0.01em;
     margin-right: 12px;
@@ -275,7 +275,7 @@ header h1 {
 .transaction-category {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 4px 12px;
-    border-radius: 20px;  /* ✅ More rounded */
+    border-radius: 20px;  /*  More rounded */
     font-size: 0.75rem;
     font-weight: 500;
     color: #6c757d;
@@ -302,25 +302,25 @@ header h1 {
 }
 
 .modal {
-    display: flex;  /* ✅ Use flex for centering */
+    display: flex;  /*  Use flex for centering */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);  /* ✅ Darker overlay */
+    background-color: rgba(0, 0, 0, 0.6);  /*  Darker overlay */
     z-index: 1000;
-    backdrop-filter: blur(4px);  /* ✅ Blur background */
+    backdrop-filter: blur(4px);  /*  Blur background */
 }
 
 .modal-content {
-    margin: auto;  /* ✅ Center with flexbox */
+    margin: auto;  /*  Center with flexbox */
     background: white;
-    padding: 40px;  /* ✅ More padding */
-    border-radius: 16px;  /* ✅ More rounded */
+    padding: 40px;  /*  More padding */
+    border-radius: 16px;  /*  More rounded */
     width: 90%;
     max-width: 420px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);  /* ✅ Dramatic shadow */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);  /*  Dramatic shadow */
 }
 
 .modal-content h2 {
@@ -560,7 +560,7 @@ header h1 {
     }
 }
 
-/* ✅ Responsive improvements */
+/*  Responsive improvements */
 @media (max-width: 768px) {
     .container {
         padding: 16px;
@@ -571,7 +571,7 @@ header h1 {
     }
     
     #totalBalance {
-        font-size: 2.5rem;  /* ✅ Smaller on mobile */
+        font-size: 2.5rem;  /*  Smaller on mobile */
     }
     
     .stats {
@@ -604,7 +604,7 @@ header h1 {
     }
 }
 
-/* ✅ Animation keyframes */
+/*  Animation keyframes */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }

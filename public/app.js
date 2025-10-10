@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.authManager = new AuthManager();
     
     setupEventListeners();
-    setupCTAButtons();  // ✅ Add CTA handlers
+    setupCTAButtons();  //  Add CTA handlers
     
     console.log('✅ App initialized successfully');
 });
@@ -98,7 +98,7 @@ function setupEventListeners() {
     });
 }
 
-// ✅ Setup CTA buttons from hero section
+//  Setup CTA buttons from hero section
 function setupCTAButtons() {
     const ctaSignup = document.getElementById('ctaSignup');
     const ctaLogin = document.getElementById('ctaLogin');
