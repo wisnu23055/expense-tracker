@@ -2,31 +2,16 @@
 window.authManager = null;
 window.expenseManager = null;
 
-// Initialize aplikasi
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Initializing Expense Tracker...');
     
-    // ✅ Initialize ExpenseManager FIRST
     window.expenseManager = new ExpenseManager();
-    console.log('✅ ExpenseManager initialized');
-    
-    // ✅ Then initialize AuthManager (will try to load expenses if logged in)
     window.authManager = new AuthManager();
-    console.log('✅ AuthManager initialized');
     
     setupEventListeners();
+    setupCTAButtons();  // ✅ Add CTA handlers
     
     console.log('✅ App initialized successfully');
-    
-    // ✅ Add debugging info
-    setTimeout(() => {
-        console.log('🔍 Debug Info:');
-        console.log('- AuthManager ready:', !!window.authManager);
-        console.log('- ExpenseManager ready:', !!window.expenseManager);
-        console.log('- User logged in:', !!window.authManager?.user);
-        console.log('- Token available:', !!window.authManager?.token);
-        console.log('- Transactions loaded:', window.expenseManager?.transactions?.length || 0);
-    }, 1000);
 });
 
 function setupEventListeners() {
@@ -37,7 +22,7 @@ function setupEventListeners() {
         const password = document.getElementById('password').value;
         
         if (!email || !password) {
-            alert('Please fill in all fields');
+            alert('Mohon isi semua field');
             return;
         }
         
@@ -51,12 +36,12 @@ function setupEventListeners() {
         const password = document.getElementById('signupPassword').value;
         
         if (!email || !password) {
-            alert('Please fill in all fields');
+            alert('Mohon isi semua field');
             return;
         }
         
         if (password.length < 6) {
-            alert('Password must be at least 6 characters');
+            alert('Password minimal 6 karakter');
             return;
         }
         
@@ -73,16 +58,14 @@ function setupEventListeners() {
         const category = document.getElementById('category').value;
 
         if (!description || !amount || !type || !category) {
-            alert('Please fill all required fields');
+            alert('Mohon isi semua field');
             return;
         }
 
         if (parseFloat(amount) <= 0) {
-            alert('Amount must be greater than 0');
+            alert('Jumlah harus lebih dari 0');
             return;
         }
-
-        console.log('➕ Adding transaction:', { description, amount, type, category });
 
         const result = await window.expenseManager.addTransaction({
             description,
@@ -92,22 +75,18 @@ function setupEventListeners() {
         });
 
         if (result) {
-            console.log('✅ Transaction added successfully');
             document.getElementById('transactionForm').reset();
         }
     });
 
-    // Auth buttons
-    document.getElementById('loginBtn').addEventListener('click', () => {
-        window.authManager.showLoginModal();
-    });
-
+    // Logout button
     document.getElementById('logoutBtn').addEventListener('click', () => {
-        if (confirm('Are you sure you want to logout?')) {
+        if (confirm('Yakin ingin logout?')) {
             window.authManager.signOut();
         }
     });
 
+    // Modal switchers
     document.getElementById('showSignup').addEventListener('click', (e) => {
         e.preventDefault();
         window.authManager.showSignupModal();
@@ -119,26 +98,37 @@ function setupEventListeners() {
     });
 }
 
-// ✅ Add global error handlers with better logging
+// ✅ Setup CTA buttons from hero section
+function setupCTAButtons() {
+    const ctaSignup = document.getElementById('ctaSignup');
+    const ctaLogin = document.getElementById('ctaLogin');
+
+    if (ctaSignup) {
+        ctaSignup.addEventListener('click', () => {
+            window.authManager.showSignupModal();
+        });
+    }
+
+    if (ctaLogin) {
+        ctaLogin.addEventListener('click', () => {
+            window.authManager.showLoginModal();
+        });
+    }
+}
+
+// Global error handlers
 window.addEventListener('error', (e) => {
     console.error('🚨 Global error:', e.error);
-    console.error('🔍 Error details:', {
-        message: e.message,
-        filename: e.filename,
-        lineno: e.lineno,
-        colno: e.colno
-    });
 });
 
 window.addEventListener('unhandledrejection', (e) => {
     console.error('🚨 Unhandled promise rejection:', e.reason);
-    console.error('🔍 Promise:', e.promise);
 });
 
-// ✅ Add visibility change handler (when user switches tabs)
+// Refresh data when tab becomes visible
 document.addEventListener('visibilitychange', () => {
     if (!document.hidden && window.authManager?.user && window.expenseManager) {
-        console.log('🔄 Tab became visible, refreshing data...');
+        console.log('🔄 Tab visible, refreshing data...');
         window.expenseManager.loadExpenses();
     }
 });

@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html lang="id">  <!-- ✅ Change to 'id' untuk Indonesian -->
-
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Expense Tracker</title>
+    <title>💰 Expense Tracker - Kelola Keuangan dengan Mudah</title>
     
-    <!-- ✅ Optimize font loading -->
+    <!-- ✅ Preload fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- ✅ Load only Quicksand (remove Oswald if not used) -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="styles.css">
@@ -17,22 +15,62 @@
 
 <body>
     <div class="container">
-        <header>
+        <!-- ✅ HERO Section - Only show when NOT logged in -->
+        <section class="hero" id="heroSection">
+            <div class="hero-content">
+                <h1>💰 Expense Tracker</h1>
+                <p class="hero-tagline">Kelola pemasukan & pengeluaran Anda dengan mudah — cepat, aman, dan mobile-friendly.</p>
+
+                <ul class="hero-features">
+                    <li>📧 Email verifikasi otomatis</li>
+                    <li>💳 Tambah / hapus transaksi</li>
+                    <li>📊 Ringkasan saldo & kategori</li>
+                    <li>🔒 Aman & terenkripsi</li>
+                </ul>
+
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-large" id="ctaSignup">Mulai Gratis</button>
+                    <button class="btn btn-secondary btn-large" id="ctaLogin">Login</button>
+                </div>
+
+                <p class="hero-footer">
+                    ✨ Gratis selamanya • Tanpa iklan • Data Anda aman
+                </p>
+            </div>
+
+            <div class="hero-visual" aria-hidden="true">
+                <div class="mockup">
+                    <div class="mockup-header">💰 Saldo Anda</div>
+                    <div class="mockup-balance">Rp 2.500.000</div>
+                    <div class="mockup-row">
+                        <div class="mockup-col income">
+                            <div class="mockup-label">Income</div>
+                            <div>+Rp 5.000.000</div>
+                        </div>
+                        <div class="mockup-col expense">
+                            <div class="mockup-label">Expense</div>
+                            <div>-Rp 2.500.000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✅ Header - Only show when logged in -->
+        <header id="appHeader" style="display: none;">
             <h1>💰 Expense Tracker</h1>
             <div class="auth-section">
-                <button id="loginBtn" class="btn btn-primary">Login</button>
-                <button id="logoutBtn" class="btn btn-secondary" style="display: none;">Logout</button>
                 <span id="userEmail" class="user-info"></span>
+                <button id="logoutBtn" class="btn btn-secondary">Logout</button>
             </div>
         </header>
 
-        <!-- Main Content (hidden until login) -->
+        <!-- ✅ Main Content - Only show when logged in -->
         <div id="mainContent" style="display: none;">
-            <!-- Summary Section -->
             <section class="summary">
                 <div class="balance">
                     <h2>Total Balance</h2>
-                    <div id="totalBalance" style="font-size: 2rem; font-weight: bold; margin-top: 10px;">Rp 0</div>
+                    <div id="totalBalance">Rp 0</div>
                 </div>
 
                 <div class="stats">
@@ -47,75 +85,70 @@
                 </div>
             </section>
 
-            <!-- Add Transaction Form -->
             <section class="add-transaction">
-                <h3>Add New Transaction</h3>
+                <h3>Tambah Transaksi Baru</h3>
                 <form id="transactionForm">
-                    <input type="text" id="description" placeholder="Description" required>
-                    <input type="number" id="amount" placeholder="Amount" step="0.01" required>
+                    <input type="text" id="description" placeholder="Deskripsi (cth: Gaji Bulanan)" required>
+                    <input type="number" id="amount" placeholder="Jumlah (Rp)" step="0.01" required>
                     <select id="type" required>
-                        <option value="">Select Type</option>
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
+                        <option value="">Pilih Tipe</option>
+                        <option value="income">💰 Pemasukan</option>
+                        <option value="expense">💸 Pengeluaran</option>
                     </select>
                     <select id="category" required>
-                        <option value="">Select Category</option>
-                        <option value="food">Food & Drinks</option>
-                        <option value="transport">Transportation</option>
-                        <option value="entertainment">Entertainment</option>
-                        <option value="bills">Bills & Utilities</option>
-                        <option value="salary">Salary</option>
-                        <option value="other">Other</option>
+                        <option value="">Pilih Kategori</option>
+                        <option value="food">🍔 Makanan & Minuman</option>
+                        <option value="transport">🚗 Transportasi</option>
+                        <option value="entertainment">🎬 Hiburan</option>
+                        <option value="bills">📄 Tagihan</option>
+                        <option value="salary">💼 Gaji</option>
+                        <option value="other">📦 Lainnya</option>
                     </select>
-                    <button type="submit" class="btn btn-primary">Add Transaction</button>
+                    <button type="submit" class="btn btn-primary">Tambah Transaksi</button>
                 </form>
             </section>
 
-            <!-- Transactions List -->
             <section class="transactions">
-                <h3>Transaction History</h3>
+                <h3>Riwayat Transaksi</h3>
                 <div id="transactionsList"></div>
             </section>
         </div>
 
-        <!-- Login Modal -->
+        <!-- ✅ Login Modal -->
         <div id="loginModal" class="modal" style="display: none;">
             <div class="modal-content">
-                <h2>Login</h2>
+                <h2>🔐 Login</h2>
                 <form id="loginForm">
                     <input type="email" id="email" placeholder="Email" required>
                     <input type="password" id="password" placeholder="Password" required>
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
                 <p style="text-align: center; margin-top: 15px;">
-                    Don't have an account?
-                    <a href="#" id="showSignup" style="color: #667eea;">Sign up</a>
+                    Belum punya akun?
+                    <a href="#" id="showSignup" style="color: #667eea; font-weight: 500;">Daftar Sekarang</a>
                 </p>
             </div>
         </div>
 
-        <!-- Signup Modal -->
+        <!-- ✅ Signup Modal -->
         <div id="signupModal" class="modal" style="display: none;">
             <div class="modal-content">
-                <h2>Sign Up</h2>
+                <h2>📝 Daftar Gratis</h2>
                 <form id="signupForm">
                     <input type="email" id="signupEmail" placeholder="Email" required>
-                    <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required>
-                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                    <input type="password" id="signupPassword" placeholder="Password (min 6 karakter)" required>
+                    <button type="submit" class="btn btn-primary">Daftar Sekarang</button>
                 </form>
                 <p style="text-align: center; margin-top: 15px;">
-                    Already have an account?
-                    <a href="#" id="showLogin" style="color: #667eea;">Login</a>
+                    Sudah punya akun?
+                    <a href="#" id="showLogin" style="color: #667eea; font-weight: 500;">Login</a>
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- ✅ TIDAK PERLU Supabase CDN! -->
-    <!-- ✅ TIDAK PERLU config.js! -->
     <script src="auth.js"></script>
     <script src="expenses.js"></script>
     <script src="app.js"></script>
 </body>
-
 </html>
