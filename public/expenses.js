@@ -7,7 +7,7 @@ class ExpenseManager {
 
     async addTransaction(transaction) {
         try {
-            console.log('➕ Adding transaction:', transaction);
+            console.log('+ Adding transaction:', transaction);
             
             //  Check auth before making request
             if (!window.authManager?.token) {
